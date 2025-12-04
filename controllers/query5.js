@@ -169,7 +169,26 @@ async function handleQuery5(req, res) {
 
     res.send(html);
   } catch (error) {
+    // Log full error details for debugging
     console.error('Error in Query 5:', error);
+    console.error('SQL Error Details:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      hint: error.hint,
+      position: error.position
+    });
+    
+    // Check if it's a connection error
+    const isConnectionError = error.code === 'ECONNREFUSED' || 
+                             error.code === 'ETIMEDOUT' || 
+                             error.message.includes('timeout') ||
+                             error.message.includes('Connection terminated');
+    
+    const errorMessage = isConnectionError 
+      ? 'Database connection failed. Please check your database configuration and ensure PostgreSQL is running.'
+      : error.message;
+    
     res.status(500).send(`
 <!DOCTYPE html>
 <html lang="en">
@@ -182,7 +201,7 @@ async function handleQuery5(req, res) {
     <div class="container mt-4">
         <div class="alert alert-danger">
             <h4>Error</h4>
-            <p>${escapeHtml(error.message)}</p>
+            <p>${escapeHtml(errorMessage)}</p>
             <a href="/query5.html" class="btn btn-primary">Try Again</a>
         </div>
     </div>

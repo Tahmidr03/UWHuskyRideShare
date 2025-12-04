@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -34,9 +35,26 @@ app.post('/query6', query6Controller.handleQuery6);
 app.post('/api/query2', query2Controller.handleQuery2);
 app.post('/api/query4', query4Controller.handleQuery4);
 
+// Import dbConfig to test connection on startup
+const { runDiagnostics } = require('./dbConfig');
+
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  console.log(`\n========================================`);
   console.log(`Server is running on http://localhost:${PORT}`);
-  console.log(`Make sure PostgreSQL is running and the database is set up.`);
+  console.log(`========================================\n`);
+  
+  // Run comprehensive diagnostics on startup
+  const diagnostics = await runDiagnostics();
+  
+  if (!diagnostics.connected) {
+    console.warn('\n⚠️  WARNING: Database connection failed. Query pages will not work until this is fixed.\n');
+  } else if (!diagnostics.tablesExist) {
+    console.warn('\n⚠️  WARNING: Some required tables are missing. Query pages may not work correctly.\n');
+    console.warn('Missing tables:', diagnostics.missingTables.join(', '));
+    console.warn('\nTo fix: Run schema.sql to create all tables and insert sample data.\n');
+  } else {
+    console.log('\n✓ Server is ready to handle requests.\n');
+  }
 });
 

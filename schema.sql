@@ -201,3 +201,184 @@ INSERT INTO BankAccounts VALUES
   (1, 'Alice', 500.00),
   (2, 'Bob',   300.00);
 
+/* ****************************************************
+   PART C — SQL Queries (PostgreSQL)
+   **************************************************** */
+
+/* Query 1:
+   Purpose: Show all confirmed rides with driver & rider names, start/end zones, time, status
+   Expected result: Returns 7+ rows using sample data (one row per confirmed match)
+*/
+SELECT d.full_name AS driver_name,
+       r.full_name AS rider_name,
+       o.start_zone,
+       o.end_zone,
+       o.start_time,
+       m.status
+FROM Matches m
+JOIN RideOffers   o ON m.offer_id   = o.offer_id
+JOIN RideRequests q ON m.request_id = q.request_id
+JOIN Users d ON o.driver_id = d.user_id
+JOIN Users r ON q.rider_id  = r.user_id
+WHERE m.status = 'confirmed'
+ORDER BY o.start_time;
+
+/* Query 2:
+   Purpose: Find top-rated drivers (highest average score across Ratings)
+   Expected result: Returns 1+ rows (ties possible): driver_name, avg_score
+*/
+SELECT u.full_name AS driver_name, 
+       ROUND(AVG(t.score)::numeric, 2) AS avg_score
+FROM Ratings t
+JOIN Users u ON t.ratee_user_id = u.user_id
+WHERE u.role IN ('driver','both')
+GROUP BY u.user_id, u.full_name
+HAVING AVG(t.score) >= ALL (
+  SELECT AVG(t2.score)
+  FROM Ratings t2
+  JOIN Users u2 ON t2.ratee_user_id = u2.user_id
+  WHERE u2.role IN ('driver','both')
+  GROUP BY u2.user_id
+)
+ORDER BY avg_score DESC, driver_name;
+
+/* Query 3:
+   Purpose: Identify overbooked offers (matched seats > seats available)
+   Expected result: Returns 0+ rows: offer_id, driver_name, seats_available, seats_matched
+*/
+SELECT o.offer_id,
+       u.full_name AS driver_name,
+       o.seats_available,
+       (SELECT COUNT(*)
+          FROM Matches m
+         WHERE m.offer_id = o.offer_id
+           AND m.status IN ('pending','confirmed')) AS seats_matched
+FROM RideOffers o
+JOIN Users u ON o.driver_id = u.user_id
+WHERE o.seats_available < (
+  SELECT COUNT(*) 
+  FROM Matches m
+  WHERE m.offer_id = o.offer_id
+    AND m.status IN ('pending','confirmed')
+)
+ORDER BY o.offer_id;
+
+/* Query 4:
+   Purpose: Supply vs demand by zone + day using FULL OUTER JOIN of offers and requests
+   Expected result: Returns rows for matched or unmatched items; NULLs indicate no counterpart
+*/
+SELECT COALESCE(o.start_zone, q.from_zone) AS zone,
+       DATE(COALESCE(o.start_time, q.desired_time)) AS ride_day,
+       o.offer_id,
+       q.request_id
+FROM RideOffers o
+FULL OUTER JOIN RideRequests q
+  ON o.start_zone  = q.from_zone
+ AND o.end_zone    = q.to_zone
+ AND DATE(o.start_time) = DATE(q.desired_time)
+ORDER BY ride_day, zone;
+
+/* Query 5:
+   Purpose: Users who are both drivers & riders (INTERSECT logic or equivalent)
+   Expected result: Returns 0+ rows: user_id, full_name, uw_email
+*/
+SELECT u.user_id, u.full_name, u.uw_email
+FROM Users u
+WHERE u.user_id IN (
+  SELECT driver_id FROM RideOffers
+  INTERSECT
+  SELECT rider_id FROM RideRequests
+)
+ORDER BY u.full_name;
+
+/* Query 6:
+   Purpose: Transaction test — transfer money between accounts with COMMIT/ROLLBACK (uses BankAccounts)
+   Expected result: Shows current account balances. The actual transaction (BEGIN/COMMIT/ROLLBACK) 
+   is handled in the web application (query6.js controller), not in this SQL file.
+   
+   Note: To test transactions manually, use:
+   BEGIN;
+     UPDATE BankAccounts SET balance = balance - 100.00 WHERE account_id = 1;
+     UPDATE BankAccounts SET balance = balance + 100.00 WHERE account_id = 2;
+     SELECT account_id, name, balance FROM BankAccounts ORDER BY account_id;
+   COMMIT;  -- or ROLLBACK; to undo
+*/
+SELECT account_id, name, balance 
+FROM BankAccounts 
+ORDER BY account_id;
+
+/* Query 7:
+   Purpose: Count drivers by status and/or role (aggregate + GROUP BY)
+   Expected result: Returns rows showing count of drivers grouped by status and role
+*/
+SELECT 
+  u.status,
+  u.role,
+  COUNT(*) AS driver_count
+FROM Users u
+WHERE u.role IN ('driver', 'both')
+GROUP BY u.status, u.role
+ORDER BY u.status, u.role;
+
+/* Query 8:
+   Purpose: Top 5 riders who requested the most rides
+   Expected result: Returns up to 5 rows: rider_name, request_count
+*/
+SELECT 
+  u.full_name AS rider_name,
+  COUNT(*) AS request_count
+FROM RideRequests r
+JOIN Users u ON r.rider_id = u.user_id
+GROUP BY u.user_id, u.full_name
+ORDER BY request_count DESC, rider_name
+LIMIT 5;
+
+/* Query 9:
+   Purpose: Vehicles with the highest capacity (list driver + car info)
+   Expected result: Returns vehicles with maximum capacity, showing driver and vehicle details
+*/
+SELECT 
+  v.vehicle_id,
+  v.make,
+  v.model,
+  v.color,
+  v.capacity,
+  u.full_name AS driver_name,
+  u.uw_email AS driver_email
+FROM Vehicles v
+LEFT JOIN Users u ON v.driver_id = u.user_id
+WHERE v.capacity = (SELECT MAX(capacity) FROM Vehicles)
+ORDER BY v.vehicle_id;
+
+/* Query 10:
+   Purpose: Drivers who have never received a rating (NOT EXISTS / LEFT JOIN … IS NULL)
+   Expected result: Returns drivers who have no ratings in the Ratings table
+*/
+SELECT 
+  u.user_id,
+  u.full_name AS driver_name,
+  u.uw_email,
+  u.role
+FROM Users u
+WHERE u.role IN ('driver', 'both')
+  AND NOT EXISTS (
+    SELECT 1 
+    FROM Ratings r 
+    WHERE r.ratee_user_id = u.user_id
+  )
+ORDER BY u.full_name;
+
+-- Alternative using LEFT JOIN (commented out):
+/*
+SELECT 
+  u.user_id,
+  u.full_name AS driver_name,
+  u.uw_email,
+  u.role
+FROM Users u
+LEFT JOIN Ratings r ON r.ratee_user_id = u.user_id
+WHERE u.role IN ('driver', 'both')
+  AND r.rating_id IS NULL
+ORDER BY u.full_name;
+*/
+

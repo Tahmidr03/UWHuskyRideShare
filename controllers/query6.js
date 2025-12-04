@@ -1,9 +1,10 @@
 const { getClient } = require('../dbConfig');
 
 async function handleQuery6(req, res) {
-  const client = await getClient();
+  let client;
   
   try {
+    client = await getClient();
     const { from_account, to_account, amount } = req.body;
 
     // Validation
@@ -171,7 +172,25 @@ async function handleQuery6(req, res) {
       throw error;
     }
   } catch (error) {
+    // Log full error details for debugging
     console.error('Error in Query 6:', error);
+    console.error('SQL Error Details:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      hint: error.hint,
+      position: error.position
+    });
+    
+    // Check if it's a connection error
+    const isConnectionError = error.code === 'ECONNREFUSED' || 
+                             error.code === 'ETIMEDOUT' || 
+                             error.message.includes('timeout') ||
+                             error.message.includes('Connection terminated');
+    
+    const errorMessage = isConnectionError 
+      ? 'Database connection failed. Please check your database configuration and ensure PostgreSQL is running.'
+      : error.message;
     
     // Generate error HTML
     const errorHtml = `
@@ -186,7 +205,7 @@ async function handleQuery6(req, res) {
     <div class="container mt-4">
         <div class="alert alert-danger">
             <h4>Transaction Failed</h4>
-            <p><strong>Error:</strong> ${escapeHtml(error.message)}</p>
+            <p><strong>Error:</strong> ${escapeHtml(errorMessage)}</p>
             <p class="mb-0">The transaction was rolled back. No changes were made to the database.</p>
         </div>
         <a href="/query6.html" class="btn btn-primary">Try Again</a>
@@ -197,7 +216,10 @@ async function handleQuery6(req, res) {
 
     res.status(400).send(errorHtml);
   } finally {
-    client.release();
+    // Only release client if it was successfully acquired
+    if (client) {
+      client.release();
+    }
   }
 }
 
