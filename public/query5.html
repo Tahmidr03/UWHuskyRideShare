@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query 5 - Dual Role Users | Husky Ride Share</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Husky Ride Share</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query1.html">Query 1</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query2.html">Query 2</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query3.html">Query 3</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query4.html">Query 4</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/query5.html">Query 5</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query6.html">Query 6</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Query 5: Users Who Both Offered and Requested Rides</h1>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Filters</h5>
+                <p class="query-description">
+                    Find users who have both offered rides as drivers and requested rides as riders. 
+                    Filter by status or role if needed.
+                </p>
+                <form method="POST" action="/query5">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="status_filter" class="form-label">Status</label>
+                            <select class="form-select" id="status_filter" name="status_filter">
+                                <option value="all" selected>All</option>
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="SUSPENDED">SUSPENDED</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="role_filter" class="form-label">Role</label>
+                            <select class="form-select" id="role_filter" name="role_filter">
+                                <option value="all" selected>All</option>
+                                <option value="rider">Rider</option>
+                                <option value="driver">Driver</option>
+                                <option value="both">Both</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2">Search</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

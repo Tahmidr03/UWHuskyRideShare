@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query 6 - Transaction Demo | Husky Ride Share</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Husky Ride Share</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query1.html">Query 1</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query2.html">Query 2</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query3.html">Query 3</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query4.html">Query 4</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/query5.html">Query 5</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/query6.html">Query 6</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Query 6: Transaction Demo - Fund Transfer</h1>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Transfer Funds Between Accounts</h5>
+                <p class="query-description">
+                    This demonstrates database transaction processing using BEGIN, COMMIT, and ROLLBACK. 
+                    Transfer funds between bank accounts. The transaction will rollback if there's insufficient balance 
+                    or any error occurs.
+                </p>
+                <div class="alert alert-info">
+                    <strong>Note:</strong> Account 1 (Alice) has $500.00, Account 2 (Bob) has $300.00. 
+                    Try transferring more than the balance to see ROLLBACK in action.
+                </div>
+                <form method="POST" action="/query6" id="transferForm">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="from_account" class="form-label">From Account ID</label>
+                            <input type="number" class="form-control" id="from_account" name="from_account" 
+                                   min="1" required placeholder="1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="to_account" class="form-label">To Account ID</label>
+                            <input type="number" class="form-control" id="to_account" name="to_account" 
+                                   min="1" required placeholder="2">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="amount" class="form-label">Amount ($)</label>
+                            <input type="number" step="0.01" min="0.01" class="form-control" id="amount" 
+                                   name="amount" required placeholder="100.00">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary me-2">Transfer Funds</button>
+                            <button type="reset" class="btn btn-secondary">Clear</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Transaction Details</h5>
+                <p class="card-text">
+                    This transaction uses the following database operations:
+                </p>
+                <ul>
+                    <li><strong>BEGIN</strong> - Starts a transaction</li>
+                    <li><strong>SELECT ... FOR UPDATE</strong> - Locks accounts to prevent concurrent modifications</li>
+                    <li><strong>UPDATE</strong> - Deducts amount from source account</li>
+                    <li><strong>UPDATE</strong> - Adds amount to destination account</li>
+                    <li><strong>COMMIT</strong> - Commits the transaction if all checks pass</li>
+                    <li><strong>ROLLBACK</strong> - Rolls back all changes if any error occurs or validation fails</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
