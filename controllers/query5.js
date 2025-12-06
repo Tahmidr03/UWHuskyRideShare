@@ -48,15 +48,16 @@ async function handleQuery5(req, res) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Query 5 - Users Who Both Offered and Requested | Husky Ride Share</title>
+    <title>Query 5 - Dual Role Users | Husky Ride Share</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Husky Ride Share</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -66,50 +67,65 @@ async function handleQuery5(req, res) {
                     <li class="nav-item"><a class="nav-link" href="/query2.html">Query 2</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query3.html">Query 3</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query4.html">Query 4</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/query5.html">Query 5</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/query5.html">Query 5</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query6.html">Query 6</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1 class="mb-4">Query 5: Users Who Both Offered and Requested Rides</h1>
-        
-        <div class="card mb-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>Query 5: Dual Role Users</h1>
+            <p class="lead">Find users who have both offered rides as drivers and requested rides as riders</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mb-5">
+        <!-- Search Filters Card -->
+        <div class="card query-section">
+            <div class="card-header">
+                <h5 class="mb-0">Search Filters</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Filters</h5>
                 <form method="POST" action="/query5">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
+                    <div class="row g-3">
+                        <div class="col-md-4">
                             <label for="status_filter" class="form-label">Status</label>
-                            <select class="form-select" id="status_filter" name="status_filter">
+                            <select class="form-select" id="status_filter" name="status_filter" aria-label="User status filter">
                                 <option value="all" ${status_filter === 'all' || !status_filter ? 'selected' : ''}>All</option>
                                 <option value="ACTIVE" ${status_filter === 'ACTIVE' ? 'selected' : ''}>ACTIVE</option>
                                 <option value="SUSPENDED" ${status_filter === 'SUSPENDED' ? 'selected' : ''}>SUSPENDED</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4">
                             <label for="role_filter" class="form-label">Role</label>
-                            <select class="form-select" id="role_filter" name="role_filter">
+                            <select class="form-select" id="role_filter" name="role_filter" aria-label="User role filter">
                                 <option value="all" ${role_filter === 'all' || !role_filter ? 'selected' : ''}>All</option>
                                 <option value="rider" ${role_filter === 'rider' ? 'selected' : ''}>Rider</option>
                                 <option value="driver" ${role_filter === 'driver' ? 'selected' : ''}>Driver</option>
                                 <option value="both" ${role_filter === 'both' ? 'selected' : ''}>Both</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary me-2">Search</button>
-                            <a href="/query5.html" class="btn btn-secondary">Reset</a>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <div class="w-100">
+                                <button type="submit" class="btn btn-primary w-100 me-2">🔍 Search</button>
+                                <a href="/query5.html" class="btn btn-secondary w-100 mt-2">Reset</a>
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
 
+        <!-- Results Card -->
         <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Results</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Results</h5>
     `;
 
     if (result.rows.length === 0) {
@@ -125,7 +141,7 @@ async function handleQuery5(req, res) {
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
-                        <thead class="table-dark">
+                        <thead>
                             <tr>
                                 <th>User ID</th>
                                 <th>Full Name</th>
@@ -162,6 +178,13 @@ async function handleQuery5(req, res) {
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
@@ -194,17 +217,29 @@ async function handleQuery5(req, res) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error | Husky Ride Share</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="container mt-4">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+        </div>
+    </nav>
+    <div class="container mt-5 mb-5">
         <div class="alert alert-danger">
             <h4>Error</h4>
             <p>${escapeHtml(errorMessage)}</p>
             <a href="/query5.html" class="btn btn-primary">Try Again</a>
         </div>
     </div>
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
 </body>
 </html>
     `);

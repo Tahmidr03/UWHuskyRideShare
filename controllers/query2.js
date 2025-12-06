@@ -4,35 +4,45 @@ async function handleQuery2(req, res) {
   try {
     const { min_avg } = req.body;
 
-    // Query 2: Top-rated drivers (those whose avg rating is >= every other driver's avg)
-    // Based on Oracle Query 2: Uses >= ALL to find drivers with max average rating
-    // PostgreSQL supports >= ALL, so we use the same logic
+    // Query 2: Top-rated drivers with optional minimum rating filter
+    // If min_avg is provided, return all drivers with avg >= min_avg
+    // Otherwise, return only drivers with the maximum average rating (>= ALL)
     const params = [];
     let paramCount = 1;
 
-    // Build the base query - using >= ALL like the Oracle version
-    let sql = `
-      SELECT 
-        u.full_name AS driver_name, 
-        ROUND(AVG(t.score)::numeric, 2) AS avg_score
-      FROM Ratings t
-      JOIN Users u ON t.ratee_user_id = u.user_id
-      WHERE u.role IN ('driver','both')
-      GROUP BY u.user_id, u.full_name
-      HAVING AVG(t.score) >= ALL (
-        SELECT AVG(t2.score)
-        FROM Ratings t2
-        JOIN Users u2 ON t2.ratee_user_id = u2.user_id
-        WHERE u2.role IN ('driver','both')
-        GROUP BY u2.user_id
-      )
-    `;
-
-    // If min_avg is provided, add additional filter
+    let sql;
+    
     if (min_avg && !isNaN(parseFloat(min_avg))) {
-      sql += ` AND AVG(t.score) >= $${paramCount}`;
+      // Filter by minimum average rating - return all drivers meeting the threshold
+      sql = `
+        SELECT 
+          u.full_name AS driver_name, 
+          ROUND(AVG(t.score)::numeric, 2) AS avg_score
+        FROM Ratings t
+        JOIN Users u ON t.ratee_user_id = u.user_id
+        WHERE u.role IN ('driver','both')
+        GROUP BY u.user_id, u.full_name
+        HAVING AVG(t.score) >= $${paramCount}
+      `;
       params.push(parseFloat(min_avg));
-      paramCount++;
+    } else {
+      // No filter - return only top-rated drivers (those with max average)
+      sql = `
+        SELECT 
+          u.full_name AS driver_name, 
+          ROUND(AVG(t.score)::numeric, 2) AS avg_score
+        FROM Ratings t
+        JOIN Users u ON t.ratee_user_id = u.user_id
+        WHERE u.role IN ('driver','both')
+        GROUP BY u.user_id, u.full_name
+        HAVING AVG(t.score) >= ALL (
+          SELECT AVG(t2.score)
+          FROM Ratings t2
+          JOIN Users u2 ON t2.ratee_user_id = u2.user_id
+          WHERE u2.role IN ('driver','both')
+          GROUP BY u2.user_id
+        )
+      `;
     }
 
     sql += ` ORDER BY avg_score DESC, driver_name`;

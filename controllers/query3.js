@@ -37,10 +37,11 @@ async function handleQuery3(req, res) {
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Husky Ride Share</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -48,7 +49,7 @@ async function handleQuery3(req, res) {
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query1.html">Query 1</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query2.html">Query 2</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/query3.html">Query 3</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/query3.html">Query 3</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query4.html">Query 4</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query5.html">Query 5</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query6.html">Query 6</a></li>
@@ -57,25 +58,39 @@ async function handleQuery3(req, res) {
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1 class="mb-4">Query 3: Overbooked Offers</h1>
-        
-        <div class="card mb-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>Query 3: Overbooked Offers</h1>
+            <p class="lead">Identify ride offers where matched seats exceed available capacity</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mb-5">
+        <!-- Query Card -->
+        <div class="card query-section">
+            <div class="card-header">
+                <h5 class="mb-0">Query Description</h5>
+            </div>
             <div class="card-body">
-                <p class="card-text">
+                <p class="query-description">
                     This query shows ride offers where the number of matched seats (pending or confirmed) 
                     exceeds the available seats.
                 </p>
                 <form method="GET" action="/query3">
-                    <button type="submit" class="btn btn-primary">Show Overbooked Offers</button>
+                    <button type="submit" class="btn btn-primary">🔍 Show Overbooked Offers</button>
                     <a href="/query3.html" class="btn btn-secondary ms-2">Refresh</a>
                 </form>
             </div>
         </div>
 
+        <!-- Results Card -->
         <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Results</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Results</h5>
     `;
 
     if (result.rows.length === 0) {
@@ -91,7 +106,7 @@ async function handleQuery3(req, res) {
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
-                        <thead class="table-dark">
+                        <thead>
                             <tr>
                                 <th>Offer ID</th>
                                 <th>Driver Name</th>
@@ -128,6 +143,13 @@ async function handleQuery3(req, res) {
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
@@ -160,17 +182,29 @@ async function handleQuery3(req, res) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error | Husky Ride Share</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="container mt-4">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+        </div>
+    </nav>
+    <div class="container mt-5 mb-5">
         <div class="alert alert-danger">
             <h4>Error</h4>
             <p>${escapeHtml(errorMessage)}</p>
             <a href="/query3.html" class="btn btn-primary">Try Again</a>
         </div>
     </div>
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
 </body>
 </html>
     `);

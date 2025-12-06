@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Husky Ride Share</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -28,44 +29,62 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1 class="mb-4">Query 5: Users Who Both Offered and Requested Rides</h1>
-        
-        <div class="card mb-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>Query 5: Dual Role Users</h1>
+            <p class="lead">Find users who have both offered rides as drivers and requested rides as riders</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mb-5">
+        <!-- Search Filters Card -->
+        <div class="card query-section">
+            <div class="card-header">
+                <h5 class="mb-0">Search Filters</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Filters</h5>
                 <p class="query-description">
-                    Find users who have both offered rides as drivers and requested rides as riders. 
-                    Filter by status or role if needed.
+                    Filter users by status or role to find those who participate in the ride share system as both drivers and riders.
                 </p>
                 <form method="POST" action="/query5">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
+                    <div class="row g-3">
+                        <div class="col-md-4">
                             <label for="status_filter" class="form-label">Status</label>
-                            <select class="form-select" id="status_filter" name="status_filter">
+                            <select class="form-select" id="status_filter" name="status_filter" aria-label="User status filter">
                                 <option value="all" selected>All</option>
                                 <option value="ACTIVE">ACTIVE</option>
                                 <option value="SUSPENDED">SUSPENDED</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4">
                             <label for="role_filter" class="form-label">Role</label>
-                            <select class="form-select" id="role_filter" name="role_filter">
+                            <select class="form-select" id="role_filter" name="role_filter" aria-label="User role filter">
                                 <option value="all" selected>All</option>
                                 <option value="rider">Rider</option>
                                 <option value="driver">Driver</option>
                                 <option value="both">Both</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary me-2">Search</button>
-                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <div class="w-100">
+                                <button type="submit" class="btn btn-primary w-100 me-2">🔍 Search</button>
+                                <button type="reset" class="btn btn-secondary w-100 mt-2">Reset</button>
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

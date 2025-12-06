@@ -35,6 +35,24 @@ app.post('/query6', query6Controller.handleQuery6);
 app.post('/api/query2', query2Controller.handleQuery2);
 app.post('/api/query4', query4Controller.handleQuery4);
 
+// Account lookup API for Query 6
+app.get('/api/accounts', async (req, res) => {
+  try {
+    const { query } = require('./dbConfig');
+    const result = await query('SELECT account_id, name, balance FROM BankAccounts ORDER BY account_id');
+    res.json({
+      success: true,
+      accounts: result.rows
+    });
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Import dbConfig to test connection on startup
 const { runDiagnostics } = require('./dbConfig');
 
@@ -52,7 +70,7 @@ app.listen(PORT, async () => {
   } else if (!diagnostics.tablesExist) {
     console.warn('\n⚠️  WARNING: Some required tables are missing. Query pages may not work correctly.\n');
     console.warn('Missing tables:', diagnostics.missingTables.join(', '));
-    console.warn('\nTo fix: Run schema.sql to create all tables and insert sample data.\n');
+    console.warn('\nTo fix: Run Group8_PhasellI.sql to create all tables and insert sample data.\n');
   } else {
     console.log('\n✓ Server is ready to handle requests.\n');
   }

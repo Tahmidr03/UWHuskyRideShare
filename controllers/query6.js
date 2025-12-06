@@ -100,10 +100,11 @@ async function handleQuery6(req, res) {
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Husky Ride Share</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -114,51 +115,65 @@ async function handleQuery6(req, res) {
                     <li class="nav-item"><a class="nav-link" href="/query3.html">Query 3</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query4.html">Query 4</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query5.html">Query 5</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/query6.html">Query 6</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/query6.html">Query 6</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1 class="mb-4">Query 6: Transaction Result</h1>
-        
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>Query 6: Transaction Result</h1>
+            <p class="lead">Transaction completed successfully</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mb-5">
         <div class="alert alert-success">
-            <h4>Transaction Successful!</h4>
-            <p>Transferred <strong>$${transferAmount.toFixed(2)}</strong> from ${escapeHtml(updatedFrom.rows[0].name)} to ${escapeHtml(updatedTo.rows[0].name)}.</p>
+            <h4>✅ Transaction Successful!</h4>
+            <p class="mb-0">Transferred <strong>$${transferAmount.toFixed(2)}</strong> from ${escapeHtml(updatedFrom.rows[0].name)} to ${escapeHtml(updatedTo.rows[0].name)}.</p>
         </div>
 
-        <div class="row">
+        <div class="row g-4">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5>From Account</h5>
+                    <div class="card-header">
+                        <h5 class="mb-0">From Account</h5>
                     </div>
                     <div class="card-body">
                         <p><strong>Account ID:</strong> ${updatedFrom.rows[0].account_id}</p>
                         <p><strong>Name:</strong> ${escapeHtml(updatedFrom.rows[0].name)}</p>
-                        <p><strong>New Balance:</strong> $${parseFloat(updatedFrom.rows[0].balance).toFixed(2)}</p>
+                        <p class="mb-0"><strong>New Balance:</strong> <span class="text-uw-purple">$${parseFloat(updatedFrom.rows[0].balance).toFixed(2)}</span></p>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h5>To Account</h5>
+                    <div class="card-header">
+                        <h5 class="mb-0">To Account</h5>
                     </div>
                     <div class="card-body">
                         <p><strong>Account ID:</strong> ${updatedTo.rows[0].account_id}</p>
                         <p><strong>Name:</strong> ${escapeHtml(updatedTo.rows[0].name)}</p>
-                        <p><strong>New Balance:</strong> $${parseFloat(updatedTo.rows[0].balance).toFixed(2)}</p>
+                        <p class="mb-0"><strong>New Balance:</strong> <span class="text-uw-purple">$${parseFloat(updatedTo.rows[0].balance).toFixed(2)}</span></p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="mt-4">
-            <a href="/query6.html" class="btn btn-primary">New Transaction</a>
+            <a href="/query6.html" class="btn btn-primary">💸 New Transaction</a>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
@@ -198,18 +213,30 @@ async function handleQuery6(req, res) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction Error | Husky Ride Share</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="container mt-4">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+        </div>
+    </nav>
+    <div class="container mt-5 mb-5">
         <div class="alert alert-danger">
-            <h4>Transaction Failed</h4>
+            <h4>❌ Transaction Failed</h4>
             <p><strong>Error:</strong> ${escapeHtml(errorMessage)}</p>
             <p class="mb-0">The transaction was rolled back. No changes were made to the database.</p>
         </div>
         <a href="/query6.html" class="btn btn-primary">Try Again</a>
     </div>
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
 </body>
 </html>
     `;
@@ -236,4 +263,5 @@ function escapeHtml(text) {
 }
 
 module.exports = { handleQuery6 };
+
 

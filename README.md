@@ -19,7 +19,7 @@ Husky Ride Share is a platform that connects UW Tacoma students for carpooling, 
 UWHuskyRideShare/
 ├── server.js              # Express server setup
 ├── dbConfig.js            # Database connection configuration
-├── schema.sql             # PostgreSQL schema and sample data
+├── Group8_PhasellI.sql    # PostgreSQL schema and sample data
 ├── package.json           # Node.js dependencies
 ├── controllers/           # Route handlers
 │   ├── query1.js         # Confirmed rides (Pattern 1: Direct HTML)
@@ -71,13 +71,13 @@ This will install:
 createdb huskyrideshare
 
 # Run schema file
-psql -d huskyrideshare -f schema.sql
+psql -d huskyrideshare -f Group8_PhasellI.sql
 ```
 
 #### Option B: Using PostgreSQL GUI (pgAdmin, DBeaver, etc.)
 
 1. Create a new database named `huskyrideshare`
-2. Open and execute the `schema.sql` file
+2. Open and execute the `Group8_PhasellI.sql` file
 
 ### 3. Configure Database Connection
 
@@ -166,7 +166,7 @@ The application uses the following main tables:
 - `Ratings` - User ratings
 - `BankAccounts` - For transaction demo (Query 6)
 
-See `schema.sql` for complete schema definition.
+See `Group8_PhasellI.sql` for complete schema definition.
 
 ## Environment Variables
 
@@ -211,6 +211,41 @@ Reinstall dependencies:
 rm -rf node_modules package-lock.json
 npm install
 ```
+
+### 🔶 Data Not Loading on Web Pages
+
+If query results do not display on the frontend:
+
+**Verify the database is running**
+```bash
+psql -l
+```
+If the database does not appear, start PostgreSQL and retry.
+
+**Confirm the schema + sample data were loaded**
+```bash
+psql -d huskyrideshare -c "SELECT COUNT(*) FROM Users;"
+```
+Expected: 50+ rows
+
+**Ensure the SQL file was imported correctly**
+```bash
+psql -d huskyrideshare -f Group8_PhasellI.sql
+```
+
+**Restart the server**
+```bash
+npm run dev
+```
+Then refresh the browser.
+
+**Check environment variables**
+
+Make sure DB credentials in `.env` or `dbConfig.js` match your local DB setup.
+
+**View server logs**
+
+Errors will appear in the terminal where `npm run dev` is running.
 
 ## Development Notes
 

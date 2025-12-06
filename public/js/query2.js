@@ -59,14 +59,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 resultsContainer.innerHTML = `
                     <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Results</h5>
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">Results</h5>
                             <div class="alert alert-success">
                                 Found <strong>${result.count}</strong> top-rated driver(s).
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered">
-                                    <thead class="table-dark">
+                                    <thead>
                                         <tr>
                                             <th>Driver Name</th>
                                             <th>Average Rating</th>

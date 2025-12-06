@@ -56,16 +56,17 @@ async function handleQuery1(req, res) {
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Husky Ride Share</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/query1.html">Query 1</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/query1.html">Query 1</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query2.html">Query 2</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query3.html">Query 3</a></li>
                     <li class="nav-item"><a class="nav-link" href="/query4.html">Query 4</a></li>
@@ -76,34 +77,49 @@ async function handleQuery1(req, res) {
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1 class="mb-4">Query 1: Confirmed Rides</h1>
-        
-        <div class="card mb-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>Query 1: Confirmed Rides</h1>
+            <p class="lead">View all confirmed rides with driver and rider information, zones, and times</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mb-5">
+        <!-- Search Filters Card -->
+        <div class="card query-section">
+            <div class="card-header">
+                <h5 class="mb-0">Search Filters</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Search Filters</h5>
                 <form method="POST" action="/query1">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="ride_date" class="form-label">Ride Date (YYYY-MM-DD)</label>
-                            <input type="date" class="form-control" id="ride_date" name="ride_date" value="${ride_date || ''}">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="ride_date" class="form-label">Ride Date</label>
+                            <input type="date" class="form-control" id="ride_date" name="ride_date" value="${ride_date || ''}" aria-label="Ride date filter">
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4">
                             <label for="zone_filter" class="form-label">Zone Filter</label>
-                            <input type="text" class="form-control" id="zone_filter" name="zone_filter" placeholder="Enter zone name" value="${zone_filter || ''}">
+                            <input type="text" class="form-control" id="zone_filter" name="zone_filter" placeholder="e.g., Federal Way TC" value="${escapeHtml(zone_filter || '')}" aria-label="Zone filter">
                         </div>
-                        <div class="col-md-4 mb-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary me-2">Search</button>
-                            <a href="/query1.html" class="btn btn-secondary">New Search</a>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <div class="w-100">
+                                <button type="submit" class="btn btn-primary w-100 me-2">🔍 Search</button>
+                                <a href="/query1.html" class="btn btn-secondary w-100 mt-2">New Search</a>
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
 
+        <!-- Results Card -->
         <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Results</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Results</h5>
     `;
 
     if (result.rows.length === 0) {
@@ -119,7 +135,7 @@ async function handleQuery1(req, res) {
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
-                        <thead class="table-dark">
+                        <thead>
                             <tr>
                                 <th>Driver Name</th>
                                 <th>Rider Name</th>
@@ -158,6 +174,13 @@ async function handleQuery1(req, res) {
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
@@ -190,17 +213,29 @@ async function handleQuery1(req, res) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error | Husky Ride Share</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="container mt-4">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+        </div>
+    </nav>
+    <div class="container mt-5 mb-5">
         <div class="alert alert-danger">
             <h4>Error</h4>
             <p>${escapeHtml(errorMessage)}</p>
             <a href="/query1.html" class="btn btn-primary">Try Again</a>
         </div>
     </div>
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
 </body>
 </html>
     `);

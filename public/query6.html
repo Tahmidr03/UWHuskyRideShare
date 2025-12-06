@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Husky Ride Share</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="/">🐾 Husky Ride Share</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -28,42 +29,54 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1 class="mb-4">Query 6: Transaction Demo - Fund Transfer</h1>
-        
-        <div class="card mb-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>Query 6: Transaction Demo - Fund Transfer</h1>
+            <p class="lead">Demonstrate database transactions using BEGIN, COMMIT, and ROLLBACK</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mb-5">
+        <!-- Transfer Form Card -->
+        <div class="card query-section">
+            <div class="card-header">
+                <h5 class="mb-0">Transfer Funds Between Accounts</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Transfer Funds Between Accounts</h5>
                 <p class="query-description">
-                    This demonstrates database transaction processing using BEGIN, COMMIT, and ROLLBACK. 
                     Transfer funds between bank accounts. The transaction will rollback if there's insufficient balance 
-                    or any error occurs.
+                    or any error occurs, demonstrating atomic transaction processing.
                 </p>
                 <div class="alert alert-info">
-                    <strong>Note:</strong> Account 1 (Alice) has $500.00, Account 2 (Bob) has $300.00. 
+                    <strong>💡 Note:</strong> There are 15 bank accounts available. Use the "View Available Accounts" button below to see all account IDs and balances before making a transfer.
                     Try transferring more than the balance to see ROLLBACK in action.
                 </div>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-warning" id="viewAccountsBtn">👁️ View Available Accounts</button>
+                </div>
                 <form method="POST" action="/query6" id="transferForm">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
+                    <div class="row g-3">
+                        <div class="col-md-4">
                             <label for="from_account" class="form-label">From Account ID</label>
                             <input type="number" class="form-control" id="from_account" name="from_account" 
-                                   min="1" required placeholder="1">
+                                   min="1" required placeholder="1" aria-label="Source account ID">
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4">
                             <label for="to_account" class="form-label">To Account ID</label>
                             <input type="number" class="form-control" id="to_account" name="to_account" 
-                                   min="1" required placeholder="2">
+                                   min="1" required placeholder="2" aria-label="Destination account ID">
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4">
                             <label for="amount" class="form-label">Amount ($)</label>
                             <input type="number" step="0.01" min="0.01" class="form-control" id="amount" 
-                                   name="amount" required placeholder="100.00">
+                                   name="amount" required placeholder="100.00" aria-label="Transfer amount">
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-3">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary me-2">Transfer Funds</button>
+                            <button type="submit" class="btn btn-primary me-2">💸 Transfer Funds</button>
                             <button type="reset" class="btn btn-secondary">Clear</button>
                         </div>
                     </div>
@@ -71,13 +84,16 @@
             </div>
         </div>
 
+        <!-- Transaction Details Card -->
         <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Transaction Details</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Transaction Details</h5>
                 <p class="card-text">
                     This transaction uses the following database operations:
                 </p>
-                <ul>
+                <ul class="mb-0">
                     <li><strong>BEGIN</strong> - Starts a transaction</li>
                     <li><strong>SELECT ... FOR UPDATE</strong> - Locks accounts to prevent concurrent modifications</li>
                     <li><strong>UPDATE</strong> - Deducts amount from source account</li>
@@ -89,7 +105,118 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">TCSS 445 - Phase III | Husky Ride Share Web Application</p>
+        </div>
+    </footer>
+
+    <!-- Account Lookup Modal -->
+    <div class="modal fade" id="accountsModal" tabindex="-1" aria-labelledby="accountsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accountsModalLabel">Available Bank Accounts</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="accountsLoading" class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading accounts...</p>
+                    </div>
+                    <div id="accountsError" class="alert alert-danger" style="display: none;"></div>
+                    <div id="accountsTable" style="display: none;">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Account ID</th>
+                                        <th>Name</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accountsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const viewAccountsBtn = document.getElementById('viewAccountsBtn');
+            const accountsModal = new bootstrap.Modal(document.getElementById('accountsModal'));
+            const accountsLoading = document.getElementById('accountsLoading');
+            const accountsError = document.getElementById('accountsError');
+            const accountsTable = document.getElementById('accountsTable');
+            const accountsTableBody = document.getElementById('accountsTableBody');
+
+            viewAccountsBtn.addEventListener('click', async function() {
+                // Reset modal state
+                accountsLoading.style.display = 'block';
+                accountsError.style.display = 'none';
+                accountsTable.style.display = 'none';
+                accountsTableBody.innerHTML = '';
+
+                // Show modal
+                accountsModal.show();
+
+                try {
+                    const response = await fetch('/api/accounts');
+                    const result = await response.json();
+
+                    if (!result.success) {
+                        throw new Error(result.error || 'Failed to fetch accounts');
+                    }
+
+                    // Hide loading, show table
+                    accountsLoading.style.display = 'none';
+                    accountsTable.style.display = 'block';
+
+                    // Populate table
+                    if (result.accounts && result.accounts.length > 0) {
+                        result.accounts.forEach(account => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td><strong>${account.account_id}</strong></td>
+                                <td>${escapeHtml(account.name)}</td>
+                                <td>$${parseFloat(account.balance).toFixed(2)}</td>
+                            `;
+                            accountsTableBody.appendChild(row);
+                        });
+                    } else {
+                        accountsTableBody.innerHTML = '<tr><td colspan="3" class="text-center">No accounts found</td></tr>';
+                    }
+                } catch (error) {
+                    accountsLoading.style.display = 'none';
+                    accountsError.style.display = 'block';
+                    accountsError.textContent = 'Error: ' + escapeHtml(error.message);
+                }
+            });
+        });
+
+        function escapeHtml(text) {
+            if (text == null) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(text).replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
 </body>
 </html>
 

@@ -77,14 +77,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 resultsContainer.innerHTML = `
                     <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Results</h5>
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">Results</h5>
                             <div class="alert alert-success">
                                 Found <strong>${result.count}</strong> record(s).
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered">
-                                    <thead class="table-dark">
+                                    <thead>
                                         <tr>
                                             <th>Zone</th>
                                             <th>Ride Day</th>
